@@ -1,0 +1,18 @@
+project:
+  name: sign-language-ai
+  phase: 0
+
+paths:
+  data_dir: ../data
+  checkpoints_dir: ../checkpoints
+  outputs_dir: ../outputs
+
+model:
+  type: lstm
+  hidden_size: 256
+  num_layers: 2
+
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  epochs: 50
