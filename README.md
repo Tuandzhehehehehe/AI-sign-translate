@@ -243,7 +243,8 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 ### Cài đặt phụ thuộc
 
 ```powershell
-d:\project\.venv\Scripts\python.exe -m pip install -r D:\project\requirements.txt
+D:\project\.venv\Scripts\python.exe -m pip install -r D:\project\requirements.txt
+```
 ```
 
 ---
