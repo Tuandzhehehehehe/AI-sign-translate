@@ -44,6 +44,8 @@ Webcam
 
 ## Công nghệ sử dụng
 
+- C++17 / CMake (hệ thống build và giao diện UI)
+- SDL3 (quản lý cửa sổ, renderer và camera/webcam subsystem)
 - Python 3.x
 - OpenCV
 - MediaPipe
@@ -224,44 +226,90 @@ Dự án chỉ được tiến xa hơn khi có đủ thông tin về:
 
 ---
 
-## Setup môi trường
+## Cài đặt và Thiết lập (Setup)
 
-### Tạo môi trường ảo
+Hệ thống sử dụng **CMake** kết hợp **FetchContent** để tự động tải và cấu hình thư viện **SDL3**, đồng thời tự động tạo môi trường ảo Python (`.venv`) và cài đặt các phụ thuộc từ `requirements.txt`.
 
-```powershell
-cd D:\project
-python -m venv .venv
+### 1. Cấu hình tự động bằng CMake
+
+Từ thư mục gốc của dự án, chạy lệnh:
+
+```bash
+cmake -B build
 ```
 
-### Kích hoạt môi trường
+Quá trình này tự động:
+1. Tải và build SDL3 (`release-3.2.28`) từ kho lưu trữ chính thức.
+2. Tạo môi trường ảo `.venv` nếu chưa có.
+3. Chạy `pip install -r requirements.txt` để cài đặt đầy đủ phụ thuộc Python vào `.venv`.
+4. Sinh file kích hoạt môi trường (`build/activate.sh` trên Linux/macOS hoặc `build/activate.bat` trên Windows).
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-& D:\project\.venv\Scripts\Activate.ps1
-```
+### 2. Biên dịch ứng dụng UI
 
-### Cài đặt phụ thuộc
-
-```powershell
-D:\project\.venv\Scripts\python.exe -m pip install -r D:\project\requirements.txt
-```
+```bash
+cmake --build build
 ```
 
 ---
 
-## Test
+## Kích hoạt môi trường ảo (Activate Environment)
 
-Chạy test hiện tại bằng interpreter của project:
+Sau khi CMake hoàn tất cấu hình, bạn có thể kích hoạt môi trường ảo Python:
 
-```powershell
-D:\project\.venv\Scripts\python.exe -m pytest -q
-```
+- **Linux / macOS:**
+  ```bash
+  source .venv/bin/activate
+  # hoặc dùng script sinh tự động trong build:
+  source build/activate.sh
+  ```
 
-Kết quả đã xác thực gần đây:
+- **Windows (PowerShell):**
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+  .\.venv\Scripts\Activate.ps1
+  ```
 
-```text
-7 passed in 6.34s
-```
+- **Windows (Command Prompt):**
+  ```cmd
+  call build\activate.bat
+  ```
+
+---
+
+## Chạy ứng dụng (Run)
+
+### 1. Chạy giao diện camera SDL3
+
+Sau khi build thành công:
+
+- **Linux / macOS:**
+  ```bash
+  ./build/ai_sign_translate_ui
+  ```
+
+- **Windows:**
+  ```cmd
+  .\build\Debug\ai_sign_translate_ui.exe
+  # hoặc
+  .\build\Release\ai_sign_translate_ui.exe
+  ```
+
+> **Lưu ý:** Ứng dụng sẽ tự động kết nối và hiển thị luồng video từ webcam của thiết bị. Nếu thiết bị không có webcam hoặc chưa cấp quyền truy cập camera, ứng dụng sẽ thông báo trên terminal và hiển thị hộp thoại cảnh báo.
+
+### 2. Chạy kiểm thử (Test)
+
+Chạy kiểm thử pipeline Python trong môi trường ảo:
+
+- **Linux / macOS:**
+  ```bash
+  PYTHONPATH=. .venv/bin/python -m pytest -q tests/test_landmarks.py
+  ```
+
+- **Windows (sau khi kích hoạt môi trường):**
+  ```powershell
+  $env:PYTHONPATH="."
+  python -m pytest -q tests/test_landmarks.py
+  ```
 
 ---
 
